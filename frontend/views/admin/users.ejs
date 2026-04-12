@@ -1,0 +1,26 @@
+<%- include('./partials/admin-header', { title: 'Users', active: 'users' }) %>
+
+<div class="admin-page-header">
+  <h1>Users</h1>
+</div>
+
+<% if (success && success.length) { %><div class="flash success"><%= success %></div><% } %>
+
+<table class="data-table">
+  <thead>
+    <tr><th>Name</th><th>Email</th><th>Role</th><th>Joined</th><th></th></tr>
+  </thead>
+  <tbody>
+    <% for (const u of users) { %>
+    <tr>
+      <td><strong><%= u.name %></strong></td>
+      <td><%= u.email %></td>
+      <td><span class="<%= u.is_admin ? 'badge-admin' : 'badge-user' %>"><%= u.is_admin ? 'Admin' : 'Customer' %></span></td>
+      <td><%= new Date(u.created_at).toLocaleDateString() %></td>
+      <td><a href="/admin/users/<%= u.id %>/edit" class="btn btn-ghost btn-sm">Edit</a></td>
+    </tr>
+    <% } %>
+  </tbody>
+</table>
+
+<%- include('./partials/admin-footer') %>

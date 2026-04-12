@@ -1,0 +1,77 @@
+<%- include('../partials/header', { title: 'Cart' }) %>
+
+<section class="section">
+  <h1 class="page-title">Your Cart</h1>
+
+  <% if (error && error.length) { %><div class="flash error"><%= error %></div><% } %>
+  <% if (success && success.length) { %><div class="flash success"><%= success %></div><% } %>
+
+  <% if (items.length === 0) { %>
+    <div class="empty-state">
+      <p>Your cart is empty. Nothing stirs within.</p>
+      <a href="/shop" class="btn btn-primary">Browse the Collection</a>
+    </div>
+  <% } else { %>
+  <div class="cart-layout">
+    <div class="cart-items">
+      <% for (const item of items) { %>
+      <div class="cart-item">
+        <img src="<%= item.image_path %>" alt="<%= item.name %>" onerror="this.src='/images/default.png'">
+        <div class="cart-item-info">
+          <h3><a href="/shop/<%= item.id %>"><%= item.name %></a></h3>
+          <p class="cart-unit-price">$<%= item.unitPrice.toFixed(2) %> each</p>
+        </div>
+        <form action="/cart/update" method="POST" class="cart-qty-form">
+          <input type="hidden" name="product_id" value="<%= item.id %>">
+          <input type="number" name="qty" value="<%= item.qty %>" min="0" max="<%= item.quantity %>" class="qty-input">
+          <button type="submit" class="btn btn-ghost btn-sm">Update</button>
+        </form>
+        <div class="cart-line-total">$<%= item.lineTotal.toFixed(2) %></div>
+        <form action="/cart/remove" method="POST">
+          <input type="hidden" name="product_id" value="<%= item.id %>">
+          <button type="submit" class="btn btn-danger btn-sm">✕</button>
+        </form>
+      </div>
+      <% } %>
+    </div>
+
+    <div class="cart-summary">
+      <h2>Order Summary</h2>
+
+      <div class="summary-row">
+        <span>Subtotal</span><span>$<%= subtotal.toFixed(2) %></span>
+      </div>
+
+      <% if (discountCode && discountAmount > 0) { %>
+      <div class="summary-row discount-row">
+        <span>Discount (<%= discountCode %>: <%= discountMsg %>)</span>
+        <span>-$<%= discountAmount.toFixed(2) %></span>
+      </div>
+      <% } %>
+
+      <div class="summary-row">
+        <span>Tax (8.25%)</span><span>$<%= tax.toFixed(2) %></span>
+      </div>
+      <div class="summary-row total-row">
+        <span>Total</span><span>$<%= total.toFixed(2) %></span>
+      </div>
+
+      <% if (discountCode) { %>
+        <form action="/cart/remove-discount" method="POST">
+          <button type="submit" class="btn btn-ghost btn-sm">Remove code "<%= discountCode %>"</button>
+        </form>
+      <% } else { %>
+        <form action="/cart/discount" method="POST" class="discount-form">
+          <input type="text" name="code" placeholder="Discount code" class="discount-input">
+          <button type="submit" class="btn btn-ghost">Apply</button>
+        </form>
+      <% } %>
+
+      <a href="/cart/checkout" class="btn btn-primary btn-lg btn-full">Proceed to Checkout →</a>
+      <a href="/shop" class="btn btn-ghost btn-full">Continue Shopping</a>
+    </div>
+  </div>
+  <% } %>
+</section>
+
+<%- include('../partials/footer') %>

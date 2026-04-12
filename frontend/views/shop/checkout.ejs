@@ -1,0 +1,43 @@
+<%- include('../partials/header', { title: 'Checkout' }) %>
+
+<section class="section">
+  <h1 class="page-title">Checkout</h1>
+
+  <div class="checkout-layout">
+    <div class="checkout-items">
+      <h2>Order Review</h2>
+      <% for (const item of items) { %>
+      <div class="checkout-item">
+        <img src="<%= item.image_path %>" alt="<%= item.name %>" onerror="this.src='/images/default.png'">
+        <div>
+          <strong><%= item.name %></strong>
+          <p>Qty: <%= item.qty %> × $<%= item.unitPrice.toFixed(2) %></p>
+        </div>
+        <span>$<%= item.lineTotal.toFixed(2) %></span>
+      </div>
+      <% } %>
+    </div>
+
+    <div class="cart-summary">
+      <h2>Final Summary</h2>
+      <div class="summary-row"><span>Subtotal</span><span>$<%= subtotal.toFixed(2) %></span></div>
+      <% if (discountAmount > 0) { %>
+      <div class="summary-row discount-row"><span>Discount (<%= discountCode %>)</span><span>-$<%= discountAmount.toFixed(2) %></span></div>
+      <% } %>
+      <div class="summary-row"><span>Tax (8.25%)</span><span>$<%= tax.toFixed(2) %></span></div>
+      <div class="summary-row total-row"><span>Total</span><span>$<%= total.toFixed(2) %></span></div>
+
+      <div class="customer-info">
+        <p><strong>Customer:</strong> <%= user.name %></p>
+        <p><strong>Email:</strong> <%= user.email %></p>
+      </div>
+
+      <form action="/cart/place-order" method="POST">
+        <button type="submit" class="btn btn-primary btn-lg btn-full">Place Order 🐾</button>
+      </form>
+      <a href="/cart" class="btn btn-ghost btn-full">← Back to Cart</a>
+    </div>
+  </div>
+</section>
+
+<%- include('../partials/footer') %>

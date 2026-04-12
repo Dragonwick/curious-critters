@@ -1,0 +1,45 @@
+<%- include('./partials/admin-header', { title: 'Order #' + order.id, active: 'orders' }) %>
+
+<div class="admin-page-header">
+  <h1>Order #<%= order.id %></h1>
+  <a href="/admin/orders" class="btn btn-ghost">← Back</a>
+</div>
+
+<div class="admin-detail-layout">
+  <div class="admin-form-card">
+    <h2>Items</h2>
+    <table class="data-table">
+      <thead><tr><th>Image</th><th>Product</th><th>Qty</th><th>Unit Price</th><th>Line Total</th></tr></thead>
+      <tbody>
+        <% for (const item of items) { %>
+        <tr>
+          <td><img src="<%= item.image_path %>" class="table-thumb" onerror="this.src='/images/default.png'"></td>
+          <td><%= item.name %></td>
+          <td><%= item.quantity %></td>
+          <td>$<%= item.price_at_purchase.toFixed(2) %></td>
+          <td>$<%= (item.quantity * item.price_at_purchase).toFixed(2) %></td>
+        </tr>
+        <% } %>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="admin-form-card">
+    <h2>Order Info</h2>
+    <div class="info-rows">
+      <div class="info-row"><span>Customer</span><span><%= order.customer_name %></span></div>
+      <div class="info-row"><span>Email</span><span><%= order.customer_email %></span></div>
+      <div class="info-row"><span>Placed</span><span><%= new Date(order.placed_at).toLocaleString() %></span></div>
+      <div class="info-row"><span>Status</span><span><span class="status-badge"><%= order.status %></span></span></div>
+      <hr>
+      <div class="info-row"><span>Subtotal</span><span>$<%= order.subtotal.toFixed(2) %></span></div>
+      <% if (order.discount_amount > 0) { %>
+      <div class="info-row discount-row"><span>Discount (<%= order.discount_code %>)</span><span>-$<%= order.discount_amount.toFixed(2) %></span></div>
+      <% } %>
+      <div class="info-row"><span>Tax (8.25%)</span><span>$<%= order.tax.toFixed(2) %></span></div>
+      <div class="info-row total-row"><span><strong>Total</strong></span><span><strong>$<%= order.total.toFixed(2) %></strong></span></div>
+    </div>
+  </div>
+</div>
+
+<%- include('./partials/admin-footer') %>

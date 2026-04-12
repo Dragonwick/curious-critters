@@ -1,0 +1,65 @@
+<%- include('./partials/admin-header', { title: 'Discount Codes', active: 'discounts' }) %>
+
+<div class="admin-page-header">
+  <h1>Discount Codes</h1>
+</div>
+
+<% if (success && success.length) { %><div class="flash success"><%= success %></div><% } %>
+<% if (error && error.length) { %><div class="flash error"><%= error %></div><% } %>
+
+<div class="admin-detail-layout">
+  <div class="admin-form-card">
+    <h2>Create New Code</h2>
+    <form action="/admin/discounts/new" method="POST" class="admin-form">
+      <div class="form-row">
+        <div class="form-group">
+          <label>Code</label>
+          <input type="text" name="code" placeholder="e.g. SUMMER20" required style="text-transform:uppercase">
+        </div>
+        <div class="form-group">
+          <label>Type</label>
+          <select name="type">
+            <option value="percent">Percent Off (%)</option>
+            <option value="flat">Flat Amount ($)</option>
+          </select>
+        </div>
+      </div>
+      <div class="form-row">
+        <div class="form-group">
+          <label>Value</label>
+          <input type="number" name="value" step="0.01" min="0" placeholder="e.g. 10 for 10% or $10" required>
+        </div>
+        <div class="form-group">
+          <label>Uses Remaining (-1 = unlimited)</label>
+          <input type="number" name="uses_remaining" value="-1">
+        </div>
+      </div>
+      <button type="submit" class="btn btn-primary">Create Code</button>
+    </form>
+  </div>
+
+  <div class="admin-form-card">
+    <h2>Active Codes</h2>
+    <table class="data-table">
+      <thead><tr><th>Code</th><th>Type</th><th>Value</th><th>Uses Left</th><th>Status</th><th></th></tr></thead>
+      <tbody>
+        <% for (const c of codes) { %>
+        <tr class="<%= !c.active ? 'row-inactive' : '' %>">
+          <td><strong><%= c.code %></strong></td>
+          <td><%= c.type %></td>
+          <td><%= c.type === 'percent' ? c.value + '%' : '$' + c.value.toFixed(2) %></td>
+          <td><%= c.uses_remaining === -1 ? '∞' : c.uses_remaining %></td>
+          <td><span class="<%= c.active ? 'badge-active' : 'badge-inactive' %>"><%= c.active ? 'Active' : 'Disabled' %></span></td>
+          <td>
+            <form action="/admin/discounts/<%= c.id %>/toggle" method="POST" style="display:inline">
+              <button type="submit" class="btn btn-ghost btn-sm"><%= c.active ? 'Disable' : 'Enable' %></button>
+            </form>
+          </td>
+        </tr>
+        <% } %>
+      </tbody>
+    </table>
+  </div>
+</div>
+
+<%- include('./partials/admin-footer') %>

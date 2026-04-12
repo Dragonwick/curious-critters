@@ -1,0 +1,54 @@
+<%- include('./partials/admin-header', { title: 'Dashboard', active: 'dashboard' }) %>
+
+<div class="admin-page-header">
+  <h1>Dashboard</h1>
+</div>
+
+<div class="stats-grid">
+  <div class="stat-card">
+    <div class="stat-icon">👤</div>
+    <div class="stat-value"><%= stats.users %></div>
+    <div class="stat-label">Customers</div>
+  </div>
+  <div class="stat-card">
+    <div class="stat-icon">🦕</div>
+    <div class="stat-value"><%= stats.products %></div>
+    <div class="stat-label">Active Products</div>
+  </div>
+  <div class="stat-card">
+    <div class="stat-icon">📦</div>
+    <div class="stat-value"><%= stats.orders %></div>
+    <div class="stat-label">Total Orders</div>
+  </div>
+  <div class="stat-card">
+    <div class="stat-icon">💰</div>
+    <div class="stat-value">$<%= Number(stats.revenue).toFixed(2) %></div>
+    <div class="stat-label">Total Revenue</div>
+  </div>
+</div>
+
+<div class="admin-section">
+  <div class="admin-section-header">
+    <h2>Recent Orders</h2>
+    <a href="/admin/orders" class="btn btn-ghost btn-sm">View All</a>
+  </div>
+  <table class="data-table">
+    <thead>
+      <tr><th>Order #</th><th>Customer</th><th>Total</th><th>Status</th><th>Date</th><th></th></tr>
+    </thead>
+    <tbody>
+      <% for (const o of recentOrders) { %>
+      <tr>
+        <td>#<%= o.id %></td>
+        <td><%= o.customer_name %></td>
+        <td>$<%= o.total.toFixed(2) %></td>
+        <td><span class="status-badge"><%= o.status %></span></td>
+        <td><%= new Date(o.placed_at).toLocaleDateString() %></td>
+        <td><a href="/admin/orders/<%= o.id %>" class="btn btn-ghost btn-sm">View</a></td>
+      </tr>
+      <% } %>
+    </tbody>
+  </table>
+</div>
+
+<%- include('./partials/admin-footer') %>

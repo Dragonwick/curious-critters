@@ -1,0 +1,65 @@
+<%- include('../partials/header', { title: 'Browse' }) %>
+
+<section class="section">
+  <h1 class="page-title">The Collection</h1>
+
+  <form class="search-bar" method="GET" action="/shop">
+    <input type="text" name="q" placeholder="Search by name or description..." value="<%= q || '' %>">
+    <select name="category">
+      <option value="">All Categories</option>
+      <% for (const cat of categories) { %>
+        <option value="<%= cat %>" <%= category === cat ? 'selected' : '' %>><%= cat %></option>
+      <% } %>
+    </select>
+    <select name="sort">
+      <option value="">Sort: Default</option>
+      <option value="price_asc" <%= sort === 'price_asc' ? 'selected' : '' %>>Price: Low → High</option>
+      <option value="price_desc" <%= sort === 'price_desc' ? 'selected' : '' %>>Price: High → Low</option>
+      <option value="availability" <%= sort === 'availability' ? 'selected' : '' %>>Availability</option>
+    </select>
+    <button type="submit" class="btn btn-primary">Search</button>
+    <% if (q || category || sort) { %>
+      <a href="/shop" class="btn btn-ghost">Clear</a>
+    <% } %>
+  </form>
+
+  <% if (products.length === 0) { %>
+    <div class="empty-state">
+      <p>No critters match your search. Perhaps they've escaped.</p>
+      <a href="/shop" class="btn btn-secondary">View All</a>
+    </div>
+  <% } else { %>
+    <p class="result-count"><%= products.length %> result<%= products.length !== 1 ? 's' : '' %></p>
+    <div class="product-grid">
+      <% for (const p of products) { %>
+      <a href="/shop/<%= p.id %>" class="product-card">
+        <div class="product-img-wrap">
+          <img src="<%= p.image_path %>" alt="<%= p.name %>" onerror="this.src='/images/default.png'">
+          <% if (p.on_sale) { %><span class="badge sale">SALE</span><% } %>
+          <% if (p.quantity === 0) { %><span class="badge oos">OUT OF STOCK</span><% } %>
+        </div>
+        <div class="product-info">
+          <span class="product-category"><%= p.category %></span>
+          <h3><%= p.name %></h3>
+          <p class="product-desc"><%= p.description.substring(0, 90) %>...</p>
+          <div class="product-footer">
+            <div class="product-price">
+              <% if (p.on_sale && p.sale_price) { %>
+                <span class="price-sale">$<%= p.sale_price.toFixed(2) %></span>
+                <span class="price-original">$<%= p.price.toFixed(2) %></span>
+              <% } else { %>
+                <span class="price">$<%= p.price.toFixed(2) %></span>
+              <% } %>
+            </div>
+            <span class="product-qty <%= p.quantity === 0 ? 'qty-zero' : p.quantity < 5 ? 'qty-low' : '' %>">
+              <% if (p.quantity === 0) { %>Sold Out<% } else { %><%= p.quantity %> available<% } %>
+            </span>
+          </div>
+        </div>
+      </a>
+      <% } %>
+    </div>
+  <% } %>
+</section>
+
+<%- include('../partials/footer') %>

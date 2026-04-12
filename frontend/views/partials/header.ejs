@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title><%= typeof title !== 'undefined' ? title + ' | ' : '' %>Curious Critters</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Cinzel+Decorative:wght@700&family=Crimson+Pro:ital,wght@0,300;0,400;0,600;1,300;1,400&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/css/style.css">
+</head>
+<body>
+  <nav class="navbar">
+    <a href="/" class="nav-logo">
+      <span class="logo-icon">🐾</span>
+      <span class="logo-text">Curious Critters</span>
+    </a>
+    <div class="nav-links">
+      <a href="/shop">Browse</a>
+      <% if (user) { %>
+        <% if (user.is_admin) { %><a href="/admin" class="admin-link">⚙ Admin</a><% } %>
+        <a href="/auth/profile">Profile</a>
+        <a href="/auth/logout">Logout</a>
+      <% } else { %>
+        <a href="/auth/login">Login</a>
+        <a href="/auth/register">Register</a>
+      <% } %>
+      <a href="/cart" class="cart-link">
+        🧺 Cart <% if (cartCount > 0) { %><span class="cart-badge"><%= cartCount %></span><% } %>
+      </a>
+    </div>
+  </nav>
+  <main>
