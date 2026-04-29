@@ -1,38 +1,50 @@
 <%- include('../partials/header', { title: 'Cart' }) %>
 
 <section class="section">
-  <h1 class="page-title">Your Cart</h1>
+  <div class="page-header">
+    <h1 class="page-title">Your Cart</h1>
+  </div>
 
-  <% if (error && error.length) { %><div class="flash error"><%= error %></div><% } %>
-  <% if (success && success.length) { %><div class="flash success"><%= success %></div><% } %>
+  <% if (error && error.length) { %><div class="flash-wrap"><div class="flash error"><%= error %></div></div><% } %>
+  <% if (success && success.length) { %><div class="flash-wrap"><div class="flash success"><%= success %></div></div><% } %>
 
   <% if (items.length === 0) { %>
     <div class="empty-state">
+      <div class="empty-icon">🧺</div>
       <p>Your cart is empty. Nothing stirs within.</p>
       <a href="/shop" class="btn btn-primary">Browse the Collection</a>
     </div>
   <% } else { %>
   <div class="cart-layout">
-    <div class="cart-items">
-      <% for (const item of items) { %>
-      <div class="cart-item">
-        <img src="<%= item.image_path %>" alt="<%= item.name %>" onerror="this.src='/images/default.png'">
-        <div class="cart-item-info">
-          <h3><a href="/shop/<%= item.id %>"><%= item.name %></a></h3>
-          <p class="cart-unit-price">$<%= item.unitPrice.toFixed(2) %> each</p>
+    <div>
+      <div class="cart-items-card">
+        <div class="cart-items-header">
+          <span>Item</span>
+          <span></span>
+          <span>Qty</span>
+          <span style="text-align:right">Total</span>
+          <span></span>
         </div>
-        <form action="/cart/update" method="POST" class="cart-qty-form">
-          <input type="hidden" name="product_id" value="<%= item.id %>">
-          <input type="number" name="qty" value="<%= item.qty %>" min="0" max="<%= item.quantity %>" class="qty-input">
-          <button type="submit" class="btn btn-ghost btn-sm">Update</button>
-        </form>
-        <div class="cart-line-total">$<%= item.lineTotal.toFixed(2) %></div>
-        <form action="/cart/remove" method="POST">
-          <input type="hidden" name="product_id" value="<%= item.id %>">
-          <button type="submit" class="btn btn-danger btn-sm">✕</button>
-        </form>
+        <% for (const item of items) { %>
+        <div class="cart-item">
+          <img class="cart-item-img" src="<%= item.image_path %>" alt="<%= item.name %>" onerror="this.src='/images/default.png'">
+          <div class="cart-item-info">
+            <h3><a href="/shop/<%= item.id %>"><%= item.name %></a></h3>
+            <p class="cart-unit-price">$<%= item.unitPrice.toFixed(2) %> each</p>
+          </div>
+          <form action="/cart/update" method="POST" class="cart-qty-form">
+            <input type="hidden" name="product_id" value="<%= item.id %>">
+            <input type="number" name="qty" value="<%= item.qty %>" min="0" max="<%= item.quantity %>" class="cart-qty-input">
+            <button type="submit" class="btn btn-ghost btn-sm" data-no-load>Update</button>
+          </form>
+          <div class="cart-line-total">$<%= item.lineTotal.toFixed(2) %></div>
+          <form action="/cart/remove" method="POST">
+            <input type="hidden" name="product_id" value="<%= item.id %>">
+            <button type="submit" class="cart-remove-btn" title="Remove item" data-no-load>✕</button>
+          </form>
+        </div>
+        <% } %>
       </div>
-      <% } %>
     </div>
 
     <div class="cart-summary">
@@ -44,8 +56,8 @@
 
       <% if (discountCode && discountAmount > 0) { %>
       <div class="summary-row discount-row">
-        <span>Discount (<%= discountCode %>: <%= discountMsg %>)</span>
-        <span>-$<%= discountAmount.toFixed(2) %></span>
+        <span>Discount (<%= discountCode %>)</span>
+        <span>−$<%= discountAmount.toFixed(2) %></span>
       </div>
       <% } %>
 
@@ -57,13 +69,16 @@
       </div>
 
       <% if (discountCode) { %>
-        <form action="/cart/remove-discount" method="POST">
-          <button type="submit" class="btn btn-ghost btn-sm">Remove code "<%= discountCode %>"</button>
-        </form>
+        <div class="applied-code">
+          <span><%= discountCode %> · <%= discountMsg %></span>
+          <form action="/cart/remove-discount" method="POST" style="margin:0">
+            <button type="submit" class="btn btn-ghost btn-sm" data-no-load>Remove</button>
+          </form>
+        </div>
       <% } else { %>
         <form action="/cart/discount" method="POST" class="discount-form">
-          <input type="text" name="code" placeholder="Discount code" class="discount-input">
-          <button type="submit" class="btn btn-ghost">Apply</button>
+          <input type="text" name="code" placeholder="Discount code" class="discount-input" autocomplete="off">
+          <button type="submit" class="btn btn-ghost" data-no-load>Apply</button>
         </form>
       <% } %>
 

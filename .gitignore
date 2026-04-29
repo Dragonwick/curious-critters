@@ -1,0 +1,6 @@
+node_modules/
+.DS_Store
+**/.DS_Store
+backend/db/critters.db-shm
+backend/db/critters.db-wal
+frontend/public/images/uploads/

@@ -1,39 +1,41 @@
 <%- include('../partials/header', { title: 'Order #' + order.id }) %>
 
 <section class="section">
-  <% if (success && success.length) { %><div class="flash success"><%= success %></div><% } %>
-
-  <div class="order-header">
-    <h1 class="page-title">Order Confirmed 🐾</h1>
-    <p class="order-meta">Order #<%= order.id %> · Placed <%= new Date(order.placed_at).toLocaleString() %></p>
+  <div class="order-confirm-banner">
+    <div class="order-confirm-icon">🐾</div>
+    <h1>Order Confirmed!</h1>
+    <p>Order #<%= order.id %> · Placed <%= new Date(order.placed_at).toLocaleString() %></p>
   </div>
 
-  <div class="checkout-layout">
-    <div class="checkout-items">
-      <h2>Items</h2>
+  <div class="order-layout">
+    <div class="order-items-card">
+      <div class="card-header">Items in this order</div>
       <% for (const item of items) { %>
-      <div class="checkout-item">
+      <div class="order-item-row">
         <img src="<%= item.image_path %>" alt="<%= item.name %>" onerror="this.src='/images/default.png'">
         <div>
           <strong><%= item.name %></strong>
           <p>Qty: <%= item.quantity %> × $<%= item.price_at_purchase.toFixed(2) %></p>
         </div>
-        <span>$<%= (item.quantity * item.price_at_purchase).toFixed(2) %></span>
+        <span class="line-price">$<%= (item.quantity * item.price_at_purchase).toFixed(2) %></span>
       </div>
       <% } %>
     </div>
 
     <div class="cart-summary">
-      <h2>Summary</h2>
+      <h2>Order Summary</h2>
       <div class="summary-row"><span>Subtotal</span><span>$<%= order.subtotal.toFixed(2) %></span></div>
       <% if (order.discount_amount > 0) { %>
-      <div class="summary-row discount-row"><span>Discount (<%= order.discount_code %>)</span><span>-$<%= order.discount_amount.toFixed(2) %></span></div>
+      <div class="summary-row discount-row"><span>Discount (<%= order.discount_code %>)</span><span>−$<%= order.discount_amount.toFixed(2) %></span></div>
       <% } %>
-      <div class="summary-row"><span>Tax</span><span>$<%= order.tax.toFixed(2) %></span></div>
+      <div class="summary-row"><span>Tax (8.25%)</span><span>$<%= order.tax.toFixed(2) %></span></div>
       <div class="summary-row total-row"><span>Total</span><span>$<%= order.total.toFixed(2) %></span></div>
-      <div class="summary-row"><span>Status</span><span class="status-badge"><%= order.status %></span></div>
+      <div class="summary-row">
+        <span>Status</span>
+        <span class="status-badge"><%= order.status %></span>
+      </div>
       <a href="/shop" class="btn btn-primary btn-full">Continue Shopping</a>
-      <a href="/auth/profile" class="btn btn-ghost btn-full">View All Orders</a>
+      <a href="/auth/profile" class="btn btn-ghost btn-full">My Orders</a>
     </div>
   </div>
 </section>

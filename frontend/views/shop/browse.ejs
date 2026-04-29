@@ -1,47 +1,62 @@
 <%- include('../partials/header', { title: 'Browse' }) %>
 
 <section class="section">
-  <h1 class="page-title">The Collection</h1>
+  <div class="page-header">
+    <h1 class="page-title">The Collection</h1>
+    <p class="page-sub">Browse our full inventory of exotic companions and supplies</p>
+  </div>
 
-  <form class="search-bar" method="GET" action="/shop">
-    <input type="text" name="q" placeholder="Search by name or description..." value="<%= q || '' %>">
-    <select name="category">
-      <option value="">All Categories</option>
-      <% for (const cat of categories) { %>
-        <option value="<%= cat %>" <%= category === cat ? 'selected' : '' %>><%= cat %></option>
+  <div class="browse-controls">
+    <form method="GET" action="/shop">
+      <div class="search-row">
+        <input type="text" name="q" placeholder="Search by name or description…" value="<%= q || '' %>">
+        <select name="sort">
+          <option value="">Sort: Default</option>
+          <option value="price_asc"    <%= sort === 'price_asc'    ? 'selected' : '' %>>Price: Low → High</option>
+          <option value="price_desc"   <%= sort === 'price_desc'   ? 'selected' : '' %>>Price: High → Low</option>
+          <option value="availability" <%= sort === 'availability' ? 'selected' : '' %>>Availability</option>
+        </select>
+        <button type="submit" class="btn btn-primary">Search</button>
+        <% if (q || category || sort) { %>
+          <a href="/shop" class="btn btn-ghost">Clear</a>
+        <% } %>
+      </div>
+
+      <% if (categories && categories.length) { %>
+      <div class="filter-row">
+        <span class="filter-label">Category:</span>
+        <a href="/shop<%= q ? '?q=' + encodeURIComponent(q) : '' %>" class="filter-pill <%= !category ? 'active' : '' %>">All</a>
+        <% for (const cat of categories) { %>
+          <a href="/shop?<%= q ? 'q=' + encodeURIComponent(q) + '&' : '' %>category=<%= encodeURIComponent(cat) %><%= sort ? '&sort=' + sort : '' %>"
+             class="filter-pill <%= category === cat ? 'active' : '' %>"><%= cat %></a>
+        <% } %>
+        <input type="hidden" name="category" value="<%= category || '' %>">
+      </div>
       <% } %>
-    </select>
-    <select name="sort">
-      <option value="">Sort: Default</option>
-      <option value="price_asc" <%= sort === 'price_asc' ? 'selected' : '' %>>Price: Low → High</option>
-      <option value="price_desc" <%= sort === 'price_desc' ? 'selected' : '' %>>Price: High → Low</option>
-      <option value="availability" <%= sort === 'availability' ? 'selected' : '' %>>Availability</option>
-    </select>
-    <button type="submit" class="btn btn-primary">Search</button>
-    <% if (q || category || sort) { %>
-      <a href="/shop" class="btn btn-ghost">Clear</a>
-    <% } %>
-  </form>
+    </form>
+  </div>
 
   <% if (products.length === 0) { %>
     <div class="empty-state">
+      <div class="empty-icon">🔍</div>
       <p>No critters match your search. Perhaps they've escaped.</p>
       <a href="/shop" class="btn btn-secondary">View All</a>
     </div>
   <% } else { %>
-    <p class="result-count"><%= products.length %> result<%= products.length !== 1 ? 's' : '' %></p>
+    <p class="result-count"><%= products.length %> result<%= products.length !== 1 ? 's' : '' %><% if (q || category) { %> for "<%= q || category %>"<% } %></p>
     <div class="product-grid">
       <% for (const p of products) { %>
       <a href="/shop/<%= p.id %>" class="product-card">
         <div class="product-img-wrap">
-          <img src="<%= p.image_path %>" alt="<%= p.name %>" onerror="this.src='/images/default.png'">
-          <% if (p.on_sale) { %><span class="badge sale">SALE</span><% } %>
-          <% if (p.quantity === 0) { %><span class="badge oos">OUT OF STOCK</span><% } %>
+          <img src="<%= p.image_path %>" alt="<%= p.name %>" loading="lazy" onerror="this.src='/images/default.png'">
+          <% if (p.on_sale) { %><span class="badge sale">Sale</span><% } %>
+          <% if (p.quantity === 0) { %><span class="badge oos badge-right">Sold Out</span><% } %>
+          <div class="product-overlay"><span>View Details</span></div>
         </div>
         <div class="product-info">
           <span class="product-category"><%= p.category %></span>
           <h3><%= p.name %></h3>
-          <p class="product-desc"><%= p.description.substring(0, 90) %>...</p>
+          <p class="product-desc"><%= p.description.substring(0, 90) %>…</p>
           <div class="product-footer">
             <div class="product-price">
               <% if (p.on_sale && p.sale_price) { %>
@@ -52,7 +67,7 @@
               <% } %>
             </div>
             <span class="product-qty <%= p.quantity === 0 ? 'qty-zero' : p.quantity < 5 ? 'qty-low' : '' %>">
-              <% if (p.quantity === 0) { %>Sold Out<% } else { %><%= p.quantity %> available<% } %>
+              <% if (p.quantity === 0) { %>Sold Out<% } else { %><%= p.quantity %> left<% } %>
             </span>
           </div>
         </div>

@@ -1,43 +1,77 @@
 <%- include('./partials/admin-header', { title: 'Order #' + order.id, active: 'orders' }) %>
 
 <div class="admin-page-header">
-  <h1>Order #<%= order.id %></h1>
-  <a href="/admin/orders" class="btn btn-ghost">← Back</a>
+  <div>
+    <h1>Order #<%= order.id %></h1>
+    <p>Placed <%= new Date(order.placed_at).toLocaleString() %></p>
+  </div>
+  <a href="/admin/orders" class="btn btn-ghost">← Back to Orders</a>
 </div>
 
 <div class="admin-detail-layout">
   <div class="admin-form-card">
-    <h2>Items</h2>
-    <table class="data-table">
-      <thead><tr><th>Image</th><th>Product</th><th>Qty</th><th>Unit Price</th><th>Line Total</th></tr></thead>
-      <tbody>
-        <% for (const item of items) { %>
-        <tr>
-          <td><img src="<%= item.image_path %>" class="table-thumb" onerror="this.src='/images/default.png'"></td>
-          <td><%= item.name %></td>
-          <td><%= item.quantity %></td>
-          <td>$<%= item.price_at_purchase.toFixed(2) %></td>
-          <td>$<%= (item.quantity * item.price_at_purchase).toFixed(2) %></td>
-        </tr>
-        <% } %>
-      </tbody>
-    </table>
+    <div class="admin-form-card-header"><h2>Items Ordered</h2></div>
+    <div style="padding:0">
+      <table class="data-table">
+        <thead>
+          <tr>
+            <th>Image</th>
+            <th>Product</th>
+            <th>Qty</th>
+            <th>Unit Price</th>
+            <th>Line Total</th>
+          </tr>
+        </thead>
+        <tbody>
+          <% for (const item of items) { %>
+          <tr>
+            <td><img src="<%= item.image_path %>" class="table-thumb" onerror="this.src='/images/default.png'"></td>
+            <td><strong><%= item.name %></strong></td>
+            <td><%= item.quantity %></td>
+            <td class="muted">$<%= item.price_at_purchase.toFixed(2) %></td>
+            <td><span class="revenue-text">$<%= (item.quantity * item.price_at_purchase).toFixed(2) %></span></td>
+          </tr>
+          <% } %>
+        </tbody>
+      </table>
+    </div>
   </div>
 
   <div class="admin-form-card">
-    <h2>Order Info</h2>
-    <div class="info-rows">
-      <div class="info-row"><span>Customer</span><span><%= order.customer_name %></span></div>
-      <div class="info-row"><span>Email</span><span><%= order.customer_email %></span></div>
-      <div class="info-row"><span>Placed</span><span><%= new Date(order.placed_at).toLocaleString() %></span></div>
-      <div class="info-row"><span>Status</span><span><span class="status-badge"><%= order.status %></span></span></div>
-      <hr>
-      <div class="info-row"><span>Subtotal</span><span>$<%= order.subtotal.toFixed(2) %></span></div>
-      <% if (order.discount_amount > 0) { %>
-      <div class="info-row discount-row"><span>Discount (<%= order.discount_code %>)</span><span>-$<%= order.discount_amount.toFixed(2) %></span></div>
-      <% } %>
-      <div class="info-row"><span>Tax (8.25%)</span><span>$<%= order.tax.toFixed(2) %></span></div>
-      <div class="info-row total-row"><span><strong>Total</strong></span><span><strong>$<%= order.total.toFixed(2) %></strong></span></div>
+    <div class="admin-form-card-header"><h2>Order Details</h2></div>
+    <div class="admin-form-card-body">
+      <div class="info-rows">
+        <div class="info-row">
+          <span>Customer</span>
+          <strong><%= order.customer_name %></strong>
+        </div>
+        <div class="info-row">
+          <span>Email</span>
+          <span class="muted"><%= order.customer_email %></span>
+        </div>
+        <div class="info-row">
+          <span>Status</span>
+          <span class="status-badge"><%= order.status %></span>
+        </div>
+        <div class="info-row">
+          <span>Subtotal</span>
+          <span>$<%= order.subtotal.toFixed(2) %></span>
+        </div>
+        <% if (order.discount_amount > 0) { %>
+        <div class="info-row" style="color:var(--sale)">
+          <span>Discount (<%= order.discount_code %>)</span>
+          <span>−$<%= order.discount_amount.toFixed(2) %></span>
+        </div>
+        <% } %>
+        <div class="info-row">
+          <span>Tax (8.25%)</span>
+          <span>$<%= order.tax.toFixed(2) %></span>
+        </div>
+        <div class="info-row" style="font-size:1.05rem;padding-top:0.9rem;border-top:2px solid var(--border-medium)">
+          <strong>Total</strong>
+          <span class="revenue-text" style="font-size:1.15rem">$<%= order.total.toFixed(2) %></span>
+        </div>
+      </div>
     </div>
   </div>
 </div>

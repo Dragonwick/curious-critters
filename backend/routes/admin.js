@@ -24,8 +24,11 @@ router.get('/', (req, res) => {
     revenue: db.prepare('SELECT COALESCE(SUM(total), 0) as s FROM orders').get().s,
   };
   const recentOrders = db.prepare(`
-    SELECT o.*, u.name as customer_name FROM orders o
+    SELECT o.*, u.name as customer_name, COUNT(oi.id) as item_count
+    FROM orders o
     JOIN users u ON u.id = o.user_id
+    LEFT JOIN order_items oi ON oi.order_id = o.id
+    GROUP BY o.id
     ORDER BY o.placed_at DESC LIMIT 5
   `).all();
   res.render('admin/dashboard', { user: req.session.user, stats, recentOrders });

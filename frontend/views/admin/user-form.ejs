@@ -1,46 +1,59 @@
 <%- include('./partials/admin-header', { title: 'Edit User', active: 'users' }) %>
 
 <div class="admin-page-header">
-  <h1>Edit User: <%= profile.name %></h1>
-  <a href="/admin/users" class="btn btn-ghost">← Back</a>
+  <div>
+    <h1>Edit User</h1>
+    <p><%= profile.name %> · <%= profile.email %></p>
+  </div>
+  <a href="/admin/users" class="btn btn-ghost">← Back to Users</a>
 </div>
 
-<% if (error && error.length) { %><div class="flash error"><%= error %></div><% } %>
+<% if (error && error.length) { %><div class="flash error" style="margin-bottom:1.5rem"><%= error %></div><% } %>
 
-<div class="admin-form-card" style="max-width:600px">
-  <form action="/admin/users/<%= profile.id %>/edit" method="POST" class="admin-form">
-    <div class="form-group">
-      <label>Full Name</label>
-      <input type="text" name="name" value="<%= profile.name %>" required>
-    </div>
-    <div class="form-group">
-      <label>Email</label>
-      <input type="email" name="email" value="<%= profile.email %>" required>
-    </div>
-    <div class="form-group">
-      <label>Address</label>
-      <input type="text" name="address" value="<%= profile.address || '' %>">
-    </div>
-    <div class="form-group">
-      <label>Phone</label>
-      <input type="tel" name="phone" value="<%= profile.phone || '' %>">
-    </div>
-    <div class="form-group checkbox-group">
-      <label>
-        <input type="checkbox" name="is_admin" value="1" <%= profile.is_admin ? 'checked' : '' %>>
-        Admin privileges
-      </label>
-    </div>
-    <hr class="form-divider">
-    <div class="form-group">
-      <label>Reset Password (leave blank to keep current)</label>
-      <input type="password" name="new_password" placeholder="New password">
-    </div>
-    <div class="form-actions">
-      <button type="submit" class="btn btn-primary">Save Changes</button>
-      <a href="/admin/users" class="btn btn-ghost">Cancel</a>
-    </div>
-  </form>
+<div class="admin-form-card" style="max-width:620px">
+  <div class="admin-form-card-header"><h2>Account Details</h2></div>
+  <div class="admin-form-card-body">
+    <form action="/admin/users/<%= profile.id %>/edit" method="POST" class="admin-form">
+      <div class="form-row">
+        <div class="form-group">
+          <label>Full Name</label>
+          <input type="text" name="name" value="<%= profile.name %>" required>
+        </div>
+        <div class="form-group">
+          <label>Email</label>
+          <input type="email" name="email" value="<%= profile.email %>" required>
+        </div>
+      </div>
+      <div class="form-row">
+        <div class="form-group">
+          <label>Address</label>
+          <input type="text" name="address" value="<%= profile.address || '' %>" placeholder="Optional">
+        </div>
+        <div class="form-group">
+          <label>Phone</label>
+          <input type="tel" name="phone" value="<%= profile.phone || '' %>" placeholder="Optional">
+        </div>
+      </div>
+      <div class="form-group">
+        <label class="checkbox-group">
+          <input type="checkbox" name="is_admin" value="1" <%= profile.is_admin ? 'checked' : '' %>>
+          <span>Grant admin privileges</span>
+        </label>
+      </div>
+
+      <hr class="form-divider">
+      <p class="form-section-label" style="color:var(--text-muted);font-size:0.8rem;text-transform:uppercase;letter-spacing:0.08em">Reset Password</p>
+      <div class="form-group">
+        <label>New Password <span class="small muted">(leave blank to keep current)</span></label>
+        <input type="password" name="new_password" placeholder="New password" autocomplete="new-password">
+      </div>
+
+      <div class="form-actions">
+        <button type="submit" class="btn btn-primary">Save Changes</button>
+        <a href="/admin/users" class="btn btn-ghost">Cancel</a>
+      </div>
+    </form>
+  </div>
 </div>
 
 <%- include('./partials/admin-footer') %>

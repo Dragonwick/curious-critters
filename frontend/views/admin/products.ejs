@@ -1,37 +1,58 @@
 <%- include('./partials/admin-header', { title: 'Products', active: 'products' }) %>
 
 <div class="admin-page-header">
-  <h1>Products</h1>
+  <div>
+    <h1>Products</h1>
+    <p>Manage your catalog of critters and supplies</p>
+  </div>
   <a href="/admin/products/new" class="btn btn-primary">+ Add Product</a>
 </div>
 
-<% if (success && success.length) { %><div class="flash success"><%= success %></div><% } %>
+<% if (success && success.length) { %><div class="flash success" style="margin-bottom:1.5rem"><%= success %></div><% } %>
 
-<table class="data-table">
-  <thead>
-    <tr><th>Image</th><th>Name</th><th>Category</th><th>Price</th><th>Stock</th><th>Sale</th><th>Active</th><th></th></tr>
-  </thead>
-  <tbody>
-    <% for (const p of products) { %>
-    <tr class="<%= !p.active ? 'row-inactive' : '' %>">
-      <td><img src="<%= p.image_path %>" alt="" class="table-thumb" onerror="this.src='/images/default.png'"></td>
-      <td><strong><%= p.name %></strong></td>
-      <td><%= p.category || '—' %></td>
-      <td>
-        <% if (p.on_sale && p.sale_price) { %>
-          <span class="price-sale">$<%= p.sale_price.toFixed(2) %></span>
-          <span class="price-original small">$<%= p.price.toFixed(2) %></span>
-        <% } else { %>
-          $<%= p.price.toFixed(2) %>
-        <% } %>
-      </td>
-      <td class="<%= p.quantity === 0 ? 'qty-zero' : p.quantity < 5 ? 'qty-low' : '' %>"><%= p.quantity %></td>
-      <td><%= p.on_sale ? '🏷 Yes' : '—' %></td>
-      <td><%= p.active ? '✓' : '✗' %></td>
-      <td><a href="/admin/products/<%= p.id %>/edit" class="btn btn-ghost btn-sm">Edit</a></td>
-    </tr>
-    <% } %>
-  </tbody>
-</table>
+<div class="admin-table-wrap">
+  <table class="data-table">
+    <thead>
+      <tr>
+        <th>Image</th>
+        <th>Name</th>
+        <th>Category</th>
+        <th>Price</th>
+        <th>Stock</th>
+        <th>Status</th>
+        <th></th>
+      </tr>
+    </thead>
+    <tbody>
+      <% for (const p of products) { %>
+      <tr class="<%= !p.active ? 'row-inactive' : '' %>">
+        <td><img src="<%= p.image_path %>" alt="" class="table-thumb" onerror="this.src='/images/default.png'"></td>
+        <td><strong><%= p.name %></strong></td>
+        <td><span class="muted small"><%= p.category || '—' %></span></td>
+        <td>
+          <% if (p.on_sale && p.sale_price) { %>
+            <span class="price-sale" style="font-size:0.9rem">$<%= p.sale_price.toFixed(2) %></span>
+            <span class="price-original small">$<%= p.price.toFixed(2) %></span>
+          <% } else { %>
+            <span style="color:var(--accent);font-weight:600">$<%= p.price.toFixed(2) %></span>
+          <% } %>
+        </td>
+        <td>
+          <span class="<%= p.quantity === 0 ? 'qty-zero' : p.quantity < 5 ? 'qty-low' : '' %>">
+            <%= p.quantity %>
+          </span>
+        </td>
+        <td>
+          <div style="display:flex;gap:0.4rem;flex-wrap:wrap">
+            <% if (p.on_sale) { %><span class="badge-sale-tag">Sale</span><% } %>
+            <% if (p.active) { %><span class="badge-active">Active</span><% } else { %><span class="badge-inactive">Hidden</span><% } %>
+          </div>
+        </td>
+        <td><a href="/admin/products/<%= p.id %>/edit" class="btn btn-ghost btn-sm">Edit</a></td>
+      </tr>
+      <% } %>
+    </tbody>
+  </table>
+</div>
 
 <%- include('./partials/admin-footer') %>

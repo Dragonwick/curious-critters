@@ -2,11 +2,13 @@
 
 <section class="section">
   <a href="/shop" class="back-link">← Back to Collection</a>
+
   <div class="product-detail">
     <div class="product-detail-img">
       <img src="<%= product.image_path %>" alt="<%= product.name %>" onerror="this.src='/images/default.png'">
-      <% if (product.on_sale) { %><span class="badge sale large">ON SALE</span><% } %>
+      <% if (product.on_sale) { %><span class="badge sale large">On Sale</span><% } %>
     </div>
+
     <div class="product-detail-info">
       <span class="product-category"><%= product.category %></span>
       <h1><%= product.name %></h1>
@@ -23,7 +25,7 @@
 
       <p class="stock-info <%= product.quantity === 0 ? 'qty-zero' : product.quantity < 5 ? 'qty-low' : '' %>">
         <% if (product.quantity === 0) { %>
-          ⚠ Currently out of stock
+          ✕ Out of stock
         <% } else if (product.quantity < 5) { %>
           ⚡ Only <%= product.quantity %> left!
         <% } else { %>
@@ -36,7 +38,11 @@
         <input type="hidden" name="product_id" value="<%= product.id %>">
         <div class="qty-row">
           <label>Qty:</label>
-          <input type="number" name="qty" value="1" min="1" max="<%= product.quantity %>" class="qty-input">
+          <div class="qty-stepper">
+            <button type="button" class="qty-btn" data-action="minus">−</button>
+            <input type="number" name="qty" value="1" min="1" max="<%= product.quantity %>" class="qty-input">
+            <button type="button" class="qty-btn" data-action="plus">+</button>
+          </div>
         </div>
         <button type="submit" class="btn btn-primary btn-lg">Add to Cart 🧺</button>
       </form>

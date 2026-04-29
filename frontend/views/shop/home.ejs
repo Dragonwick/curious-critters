@@ -1,15 +1,49 @@
 <%- include('../partials/header', { title: 'Home' }) %>
 
 <% if (success && success.length) { %>
-  <div class="flash success"><%= success %></div>
+  <div class="flash-wrap"><div class="flash success"><%= success %></div></div>
 <% } %>
 
 <section class="hero">
+  <div class="hero-orb hero-orb-1"></div>
+  <div class="hero-orb hero-orb-2"></div>
+  <div class="hero-orb hero-orb-3"></div>
   <div class="hero-content">
-    <p class="hero-sub">Est. 2026 · For the discerning collector</p>
+    <p class="hero-eyebrow">Est. 2026 · For the discerning collector</p>
     <h1 class="hero-title">Curious Critters</h1>
-    <p class="hero-tagline">Exotic companions for unconventional households.<br>We carry what the other shops are too afraid to stock.</p>
-    <a href="/shop" class="btn btn-primary">Browse the Collection</a>
+    <p class="hero-tagline">
+      Exotic companions for unconventional households.<br>
+      We carry what the other shops are too afraid to stock.
+    </p>
+    <div class="hero-actions">
+      <a href="/shop" class="btn btn-primary btn-lg">Browse the Collection</a>
+      <a href="/auth/register" class="btn btn-secondary btn-lg">Create Account</a>
+    </div>
+  </div>
+</section>
+
+<section class="features-strip">
+  <div class="features-grid">
+    <div class="feature-item">
+      <div class="feature-icon">🦕</div>
+      <h3>Exotic Selection</h3>
+      <p>From garden gnomes to fallen angels. Something for every household.</p>
+    </div>
+    <div class="feature-item">
+      <div class="feature-icon">🧪</div>
+      <h3>Expert Care</h3>
+      <p>Grooming, vaccinations, and containment services for beings of all types.</p>
+    </div>
+    <div class="feature-item">
+      <div class="feature-icon">📦</div>
+      <h3>Secure Shipping</h3>
+      <p>Rated for up to 4 dimensions. Your critter arrives mostly intact.</p>
+    </div>
+    <div class="feature-item">
+      <div class="feature-icon">🏷</div>
+      <h3>Discount Codes</h3>
+      <p>Exclusive deals for collectors who know where to look.</p>
+    </div>
   </div>
 </section>
 
@@ -19,47 +53,33 @@
     <% for (const p of featured) { %>
     <a href="/shop/<%= p.id %>" class="product-card">
       <div class="product-img-wrap">
-        <img src="<%= p.image_path %>" alt="<%= p.name %>" onerror="this.src='/images/default.png'">
-        <% if (p.on_sale) { %><span class="badge sale">ON SALE</span><% } %>
-        <% if (p.quantity === 0) { %><span class="badge oos">OUT OF STOCK</span><% } %>
+        <img src="<%= p.image_path %>" alt="<%= p.name %>" loading="lazy" onerror="this.src='/images/default.png'">
+        <% if (p.on_sale) { %><span class="badge sale">On Sale</span><% } %>
+        <% if (p.quantity === 0) { %><span class="badge oos badge-right">Sold Out</span><% } %>
+        <div class="product-overlay"><span>View Details</span></div>
       </div>
       <div class="product-info">
         <h3><%= p.name %></h3>
-        <p class="product-desc"><%= p.description.substring(0, 80) %>...</p>
-        <div class="product-price">
-          <% if (p.on_sale && p.sale_price) { %>
-            <span class="price-sale">$<%= p.sale_price.toFixed(2) %></span>
-            <span class="price-original">$<%= p.price.toFixed(2) %></span>
-          <% } else { %>
-            <span class="price">$<%= p.price.toFixed(2) %></span>
-          <% } %>
+        <p class="product-desc"><%= p.description.substring(0, 85) %>...</p>
+        <div class="product-footer">
+          <div class="product-price">
+            <% if (p.on_sale && p.sale_price) { %>
+              <span class="price-sale">$<%= p.sale_price.toFixed(2) %></span>
+              <span class="price-original">$<%= p.price.toFixed(2) %></span>
+            <% } else { %>
+              <span class="price">$<%= p.price.toFixed(2) %></span>
+            <% } %>
+          </div>
+          <span class="product-qty <%= p.quantity === 0 ? 'qty-zero' : p.quantity < 5 ? 'qty-low' : '' %>">
+            <%= p.quantity === 0 ? 'Sold Out' : p.quantity + ' left' %>
+          </span>
         </div>
       </div>
     </a>
     <% } %>
   </div>
   <div class="center-link">
-    <a href="/shop" class="btn btn-secondary">View All →</a>
-  </div>
-</section>
-
-<section class="section tagline-section">
-  <div class="tagline-grid">
-    <div class="tagline-item">
-      <span class="tagline-icon">🦕</span>
-      <h3>Exotic Selection</h3>
-      <p>From garden gnomes to fallen angels. Something for every household.</p>
-    </div>
-    <div class="tagline-item">
-      <span class="tagline-icon">🧪</span>
-      <h3>Expert Care</h3>
-      <p>Grooming, vaccinations, and containment services for beings of all types.</p>
-    </div>
-    <div class="tagline-item">
-      <span class="tagline-icon">📦</span>
-      <h3>Secure Shipping</h3>
-      <p>Rated for up to 4 dimensions. Your critter arrives mostly intact.</p>
-    </div>
+    <a href="/shop" class="btn btn-secondary btn-lg">View Full Collection →</a>
   </div>
 </section>
 

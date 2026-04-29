@@ -1,26 +1,37 @@
 <%- include('./partials/admin-header', { title: 'Users', active: 'users' }) %>
 
 <div class="admin-page-header">
-  <h1>Users</h1>
+  <div>
+    <h1>Users</h1>
+    <p>View and manage registered accounts</p>
+  </div>
 </div>
 
-<% if (success && success.length) { %><div class="flash success"><%= success %></div><% } %>
+<% if (success && success.length) { %><div class="flash success" style="margin-bottom:1.5rem"><%= success %></div><% } %>
 
-<table class="data-table">
-  <thead>
-    <tr><th>Name</th><th>Email</th><th>Role</th><th>Joined</th><th></th></tr>
-  </thead>
-  <tbody>
-    <% for (const u of users) { %>
-    <tr>
-      <td><strong><%= u.name %></strong></td>
-      <td><%= u.email %></td>
-      <td><span class="<%= u.is_admin ? 'badge-admin' : 'badge-user' %>"><%= u.is_admin ? 'Admin' : 'Customer' %></span></td>
-      <td><%= new Date(u.created_at).toLocaleDateString() %></td>
-      <td><a href="/admin/users/<%= u.id %>/edit" class="btn btn-ghost btn-sm">Edit</a></td>
-    </tr>
-    <% } %>
-  </tbody>
-</table>
+<div class="admin-table-wrap">
+  <table class="data-table">
+    <thead>
+      <tr>
+        <th>Name</th>
+        <th>Email</th>
+        <th>Role</th>
+        <th>Joined</th>
+        <th></th>
+      </tr>
+    </thead>
+    <tbody>
+      <% for (const u of users) { %>
+      <tr>
+        <td><strong><%= u.name %></strong></td>
+        <td><span class="muted"><%= u.email %></span></td>
+        <td><span class="<%= u.is_admin ? 'badge-admin' : 'badge-user' %>"><%= u.is_admin ? 'Admin' : 'Customer' %></span></td>
+        <td><span class="muted small"><%= new Date(u.created_at).toLocaleDateString() %></span></td>
+        <td><a href="/admin/users/<%= u.id %>/edit" class="btn btn-ghost btn-sm">Edit</a></td>
+      </tr>
+      <% } %>
+    </tbody>
+  </table>
+</div>
 
 <%- include('./partials/admin-footer') %>

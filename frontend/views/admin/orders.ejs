@@ -1,35 +1,57 @@
 <%- include('./partials/admin-header', { title: 'Orders', active: 'orders' }) %>
 
 <div class="admin-page-header">
-  <h1>Orders</h1>
+  <div>
+    <h1>Orders</h1>
+    <p>Full history of all placed orders</p>
+  </div>
   <div class="sort-controls">
-    Sort by:
+    <span>Sort:</span>
     <a href="/admin/orders" class="btn btn-ghost btn-sm <%= !sort ? 'active' : '' %>">Date</a>
     <a href="/admin/orders?sort=customer" class="btn btn-ghost btn-sm <%= sort === 'customer' ? 'active' : '' %>">Customer</a>
     <a href="/admin/orders?sort=total" class="btn btn-ghost btn-sm <%= sort === 'total' ? 'active' : '' %>">Amount</a>
   </div>
 </div>
 
-<table class="data-table">
-  <thead>
-    <tr><th>Order #</th><th>Customer</th><th>Items</th><th>Subtotal</th><th>Tax</th><th>Discount</th><th>Total</th><th>Status</th><th>Date</th><th></th></tr>
-  </thead>
-  <tbody>
-    <% for (const o of orders) { %>
-    <tr>
-      <td><strong>#<%= o.id %></strong></td>
-      <td><%= o.customer_name %></td>
-      <td><%= o.item_count %></td>
-      <td>$<%= o.subtotal.toFixed(2) %></td>
-      <td>$<%= o.tax.toFixed(2) %></td>
-      <td><%= o.discount_amount > 0 ? '-$' + o.discount_amount.toFixed(2) : '—' %></td>
-      <td><strong>$<%= o.total.toFixed(2) %></strong></td>
-      <td><span class="status-badge"><%= o.status %></span></td>
-      <td><%= new Date(o.placed_at).toLocaleDateString() %></td>
-      <td><a href="/admin/orders/<%= o.id %>" class="btn btn-ghost btn-sm">View</a></td>
-    </tr>
-    <% } %>
-  </tbody>
-</table>
+<div class="admin-table-wrap">
+  <% if (orders.length === 0) { %>
+    <div class="table-empty">No orders have been placed yet.</div>
+  <% } else { %>
+  <table class="data-table">
+    <thead>
+      <tr>
+        <th>Order #</th>
+        <th>Customer</th>
+        <th>Items</th>
+        <th>Subtotal</th>
+        <th>Tax</th>
+        <th>Discount</th>
+        <th>Total</th>
+        <th>Status</th>
+        <th>Date</th>
+        <th></th>
+      </tr>
+    </thead>
+    <tbody>
+      <% for (const o of orders) { %>
+      <tr>
+        <td><strong>#<%= o.id %></strong></td>
+        <td><%= o.customer_name %></td>
+        <td><%= o.item_count %></td>
+        <td class="muted small">$<%= o.subtotal.toFixed(2) %></td>
+        <td class="muted small">$<%= o.tax.toFixed(2) %></td>
+        <td class="<%= o.discount_amount > 0 ? '' : 'muted small' %>">
+          <%= o.discount_amount > 0 ? '−$' + o.discount_amount.toFixed(2) : '—' %>
+        </td>
+        <td><span class="revenue-text">$<%= o.total.toFixed(2) %></span></td>
+        <td><span class="status-badge"><%= o.status %></span></td>
+        <td class="muted small"><%= new Date(o.placed_at).toLocaleDateString() %></td>
+        <td><a href="/admin/orders/<%= o.id %>" class="btn btn-ghost btn-sm">View</a></td>
+      </tr>
+      <% } %>
+    </tbody>
+  </table>
+  <% } %>
+</div>
 
 <%- include('./partials/admin-footer') %>

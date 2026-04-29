@@ -1,64 +1,86 @@
 <%- include('../partials/header', { title: 'My Profile' }) %>
 
 <section class="section">
-  <h1 class="page-title">My Profile</h1>
+  <div class="page-header">
+    <h1 class="page-title">My Profile</h1>
+    <p class="page-sub">Manage your account details and view your order history</p>
+  </div>
 
-  <% if (error && error.length) { %><div class="flash error"><%= error %></div><% } %>
-  <% if (success && success.length) { %><div class="flash success"><%= success %></div><% } %>
+  <% if (error && error.length) { %><div class="flash-wrap" style="padding:0 0 1.5rem"><div class="flash error"><%= error %></div></div><% } %>
+  <% if (success && success.length) { %><div class="flash-wrap" style="padding:0 0 1.5rem"><div class="flash success"><%= success %></div></div><% } %>
 
   <div class="profile-layout">
-    <div class="auth-card">
-      <h2>Account Details</h2>
-      <form action="/auth/profile" method="POST" class="auth-form">
-        <div class="form-group">
-          <label>Full Name</label>
-          <input type="text" name="name" value="<%= profile.name %>" required>
-        </div>
-        <div class="form-group">
-          <label>Email</label>
-          <input type="email" value="<%= profile.email %>" disabled>
-        </div>
-        <div class="form-group">
-          <label>Address</label>
-          <input type="text" name="address" value="<%= profile.address || '' %>">
-        </div>
-        <div class="form-group">
-          <label>Phone</label>
-          <input type="tel" name="phone" value="<%= profile.phone || '' %>">
-        </div>
-        <hr class="form-divider">
-        <p class="form-section-label">Change Password (leave blank to keep current)</p>
-        <div class="form-group">
-          <label>Current Password</label>
-          <input type="password" name="current_password" placeholder="••••••••">
-        </div>
-        <div class="form-group">
-          <label>New Password</label>
-          <input type="password" name="new_password" placeholder="••••••••">
-        </div>
-        <button type="submit" class="btn btn-primary btn-full">Save Changes</button>
-      </form>
+    <div class="profile-card">
+      <div class="profile-card-header">
+        <h2>Account Details</h2>
+      </div>
+      <div class="profile-card-body">
+        <form action="/auth/profile" method="POST" class="profile-form">
+          <div class="form-group">
+            <label>Full Name</label>
+            <input type="text" name="name" value="<%= profile.name %>" required>
+          </div>
+          <div class="form-group">
+            <label>Email</label>
+            <input type="email" value="<%= profile.email %>" disabled style="opacity:0.55;cursor:not-allowed">
+          </div>
+          <div class="form-group">
+            <label>Address</label>
+            <input type="text" name="address" value="<%= profile.address || '' %>" placeholder="123 Void St">
+          </div>
+          <div class="form-group">
+            <label>Phone</label>
+            <input type="tel" name="phone" value="<%= profile.phone || '' %>" placeholder="(555) 000-0000">
+          </div>
+
+          <hr class="form-divider">
+          <p class="form-section-label">Change Password</p>
+          <p class="small muted" style="margin-top:-0.5rem">Leave blank to keep your current password</p>
+
+          <div class="form-group">
+            <label>Current Password</label>
+            <input type="password" name="current_password" placeholder="••••••••" autocomplete="current-password">
+          </div>
+          <div class="form-group">
+            <label>New Password</label>
+            <input type="password" name="new_password" placeholder="••••••••" autocomplete="new-password">
+          </div>
+          <button type="submit" class="btn btn-primary btn-full">Save Changes</button>
+        </form>
+      </div>
     </div>
 
-    <div class="order-history">
-      <h2>Order History</h2>
+    <div class="order-history-card">
+      <div class="order-history-card-header">Order History</div>
       <% if (orders.length === 0) { %>
-        <p class="muted">No orders yet. <a href="/shop">Browse the collection.</a></p>
+        <div class="table-empty">
+          <p>No orders yet. <a href="/shop">Browse the collection.</a></p>
+        </div>
       <% } else { %>
-        <table class="data-table">
-          <thead><tr><th>Order #</th><th>Items</th><th>Total</th><th>Date</th><th></th></tr></thead>
-          <tbody>
-            <% for (const o of orders) { %>
-            <tr>
-              <td>#<%= o.id %></td>
-              <td><%= o.item_count %></td>
-              <td>$<%= o.total.toFixed(2) %></td>
-              <td><%= new Date(o.placed_at).toLocaleDateString() %></td>
-              <td><a href="/orders/<%= o.id %>" class="btn btn-ghost btn-sm">View</a></td>
-            </tr>
-            <% } %>
-          </tbody>
-        </table>
+        <div class="table-wrap">
+          <table class="data-table">
+            <thead>
+              <tr>
+                <th>Order #</th>
+                <th>Items</th>
+                <th>Total</th>
+                <th>Date</th>
+                <th></th>
+              </tr>
+            </thead>
+            <tbody>
+              <% for (const o of orders) { %>
+              <tr>
+                <td>#<%= o.id %></td>
+                <td><%= o.item_count %></td>
+                <td><span class="revenue-text">$<%= o.total.toFixed(2) %></span></td>
+                <td class="muted small"><%= new Date(o.placed_at).toLocaleDateString() %></td>
+                <td><a href="/orders/<%= o.id %>" class="btn btn-ghost btn-sm">View</a></td>
+              </tr>
+              <% } %>
+            </tbody>
+          </table>
+        </div>
       <% } %>
     </div>
   </div>
